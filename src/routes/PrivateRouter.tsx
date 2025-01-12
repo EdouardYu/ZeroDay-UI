@@ -1,6 +1,6 @@
 import { FunctionComponent } from "react";
 import { Routes, Route } from "react-router-dom";
-import { PrivateLayout, Home, Profile, PageNotFound } from "@/pages";
+import { PrivateLayout, Home, Post, Profile, PageNotFound } from "@/pages";
 
 const PrivateRouter: FunctionComponent = () => {
   return (
@@ -8,6 +8,7 @@ const PrivateRouter: FunctionComponent = () => {
       <Route element={<PrivateLayout />}>
         <Route index element={<Home />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/post/:id" element={<Post />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="*" element={<PageNotFound />} />
       </Route>
