@@ -2,6 +2,7 @@ import { FunctionComponent, useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "@/components/layout/header/Header.css";
 import HomeIcon from "@/components/icons/Home";
+import PostEditIcon from "@/components/icons/PostEdit";
 import AuthService from "@/services/AuthService";
 import FileService from "@/services/FileService";
 
@@ -95,6 +96,13 @@ const LogedHeader: FunctionComponent = () => {
         >
           <HomeIcon />
           <div className="tooltip">Home</div>
+        </div>
+        <div
+          className={`header-item ${active === "post" ? "active" : ""}`}
+          onClick={() => handleNavigation("/post/edit")}
+        >
+          <PostEditIcon />
+          <div className="tooltip">Create Post</div>
         </div>
       </div>
       <div className="header-right">

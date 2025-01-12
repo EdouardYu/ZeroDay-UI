@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FunctionComponent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PostService from "@/services/PostService";
 import FileService from "@/services/FileService";
@@ -39,7 +39,7 @@ interface LinkPreviewData {
   url: string;
 }
 
-const Home = () => {
+const Home: FunctionComponent = () => {
   const [posts, setPosts] = useState<PostData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
