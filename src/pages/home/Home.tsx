@@ -46,7 +46,7 @@ const Home = () => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const pageSize = 20;
 
-  const navigate = useNavigate(); // Hook pour naviguer vers une autre page
+  const navigate = useNavigate();
 
   const fetchLinkPreview = async (
     html: string
@@ -59,9 +59,8 @@ const Home = () => {
 
     try {
       const previewData = await PostService.getLinkPreview(firstLink);
-      return { ...previewData, url: firstLink }; // Inject the URL from href
-    } catch (error) {
-      console.error("Error fetching link preview:", error);
+      return { ...previewData, url: firstLink };
+    } catch {
       return null;
     }
   };
@@ -145,8 +144,6 @@ const Home = () => {
 
         setPosts(postsWithFileUrls);
         setTotalPages(response.page.totalPages);
-      } catch (error) {
-        console.error("Error fetching posts:", error);
       } finally {
         setLoading(false);
       }
@@ -163,6 +160,7 @@ const Home = () => {
           URL.revokeObjectURL(post.parent.user.picture_url);
       });
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   const nextPage = () => {
@@ -187,15 +185,17 @@ const Home = () => {
     return (
       <a href={preview.url} target="_blank" rel="noopener noreferrer">
         <div className="link-preview">
-          <img
-            src={preview.image}
-            alt="Preview"
-            className="preview-image"
-            style={{ width: "80px", height: "80px", marginRight: "10px" }}
-          />
+          {preview.image && (
+            <img
+              src={preview.image}
+              alt="Preview"
+              className="preview-image"
+              style={{ width: "80px", height: "80px", marginRight: "10px" }}
+            />
+          )}
           <div className="preview-text">
             <h4>{preview.title}</h4>
-            <p>{preview.description}</p>
+            {preview.description && <p>{preview.description}</p>}
           </div>
         </div>
       </a>
@@ -288,6 +288,10 @@ const Home = () => {
   };
 
   const renderPagination = () => {
+    if (loading || totalPages <= 1) {
+      return null;
+    }
+
     const pages = [];
     for (let i = 1; i <= totalPages; i++) {
       pages.push(
@@ -295,11 +299,13 @@ const Home = () => {
           key={i}
           className={`pagination-button ${i === currentPage ? "active" : ""}`}
           onClick={() => setCurrentPage(i)}
+          disabled={i === currentPage}
         >
           {i}
         </button>
       );
     }
+
     return (
       <div className="pagination">
         <button onClick={previousPage} disabled={currentPage === 1}>
