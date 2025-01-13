@@ -21,7 +21,7 @@ const LogedHeader: FunctionComponent = () => {
   const profileIconRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    const path = location.pathname.split("/")[1];
+    const path = location.pathname.slice(1);
     setActive(path || "home");
 
     const token = localStorage.getItem("authToken");
@@ -98,7 +98,7 @@ const LogedHeader: FunctionComponent = () => {
           <div className="tooltip">Home</div>
         </div>
         <div
-          className={`header-item ${active === "post" ? "active" : ""}`}
+          className={`header-item ${active === "post/edit" ? "active" : ""}`}
           onClick={() => handleNavigation("/post/edit")}
         >
           <PostEditIcon />

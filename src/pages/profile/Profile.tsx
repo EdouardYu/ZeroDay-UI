@@ -111,13 +111,16 @@ const Profile: FunctionComponent = () => {
   const currentUserId = token
     ? JSON.parse(atob(token.split(".")[1])).sub
     : null;
+  const currentUserRole = token
+    ? JSON.parse(atob(token.split(".")[1])).role
+    : null;
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         setIsLoading(true);
 
-        const profileData = await UserService.getProfile(id);
+        const profileData = await UserService.getProfile(id!);
         setProfile(profileData);
         setEditableProfile({
           ...profileData,
@@ -348,7 +351,7 @@ const Profile: FunctionComponent = () => {
     if (!validatePasswordChange()) return;
 
     try {
-      await UserService.changePassword(id, {
+      await UserService.changePassword(id!, {
         old_password: passwords.old_password,
         new_password: passwords.new_password,
       });
@@ -367,7 +370,7 @@ const Profile: FunctionComponent = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      await UserService.deleteAccount(id);
+      await UserService.deleteAccount(id!);
       localStorage.removeItem("authToken");
       navigate("/authentication/login");
     } catch (error) {
@@ -392,7 +395,7 @@ const Profile: FunctionComponent = () => {
     return <p>{globalError}</p>;
   }
 
-  const canEdit = currentUserId === id;
+  const canEdit = currentUserId === id || currentUserRole === "ADMINISTRATOR";
 
   return (
     <div className="profile-page">

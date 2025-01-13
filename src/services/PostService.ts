@@ -20,7 +20,7 @@ const PostService = {
     return response.data;
   },
 
-  getPostById: async (id: number) => {
+  getPostById: async (id: string) => {
     const response = await axiosInstance.get(`/posts/${id}`);
     return response.data;
   },
@@ -30,12 +30,12 @@ const PostService = {
     return response.data;
   },
 
-  updatePost: async (id: number, post: PostModificationData) => {
+  updatePost: async (id: string, post: PostModificationData) => {
     const response = await axiosInstance.put(`/posts/${id}`, post);
     return response.data;
   },
 
-  deletePost: async (id: number) => {
+  deletePost: async (id: string) => {
     await axiosInstance.delete(`/posts/${id}`);
   },
 

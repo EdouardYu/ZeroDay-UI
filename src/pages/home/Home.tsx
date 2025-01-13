@@ -7,6 +7,7 @@ import Loader from "@/components/loader/Loader";
 import { toCapitalizedWords } from "@/helpers/StringHelper";
 
 interface UserData {
+  id: number;
   username: string;
   picture_url: string;
   role: string;
@@ -210,6 +211,11 @@ const Home: FunctionComponent = () => {
             src={parent.user.picture_url}
             alt={parent.user.username}
             className="user-avatar"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/profile/${parent.user.id}`);
+            }}
+            style={{ cursor: "pointer" }}
           />
           <div className="user-info">
             <strong>{parent.user.username}</strong>
@@ -240,6 +246,11 @@ const Home: FunctionComponent = () => {
             src={post.user.picture_url}
             alt={post.user.username}
             className="user-avatar"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/profile/${post.user.id}`);
+            }}
+            style={{ cursor: "pointer" }}
           />
           <div className="user-info">
             <strong>{post.user.username}</strong>

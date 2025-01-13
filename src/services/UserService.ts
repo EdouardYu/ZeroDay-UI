@@ -27,7 +27,7 @@ const UserService = {
     return response.data;
   },
 
-  getProfile: async (id: string | undefined) => {
+  getProfile: async (id: string) => {
     const response = await axiosInstance.get(`/profiles/${id}`);
     return response.data;
   },
@@ -40,14 +40,11 @@ const UserService = {
     return response.data;
   },
 
-  changePassword: async (
-    id: string | undefined,
-    passwordData: ChangePasswordData
-  ) => {
+  changePassword: async (id: string, passwordData: ChangePasswordData) => {
     await axiosInstance.put(`/profiles/${id}/password`, passwordData);
   },
 
-  deleteAccount: async (id: string | undefined) => {
+  deleteAccount: async (id: string) => {
     await axiosInstance.delete(`/profiles/${id}`);
   },
 };
