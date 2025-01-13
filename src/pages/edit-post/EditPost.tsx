@@ -48,7 +48,7 @@ const EditPost: FunctionComponent = () => {
         setIsLoading(true);
 
         if (id) {
-          const parentPost = await PostService.getPostById(Number(id));
+          const parentPost = await PostService.getPostById(id);
           setEditablePost((prevState) => ({
             ...prevState,
             parent_id: parentPost.id,
