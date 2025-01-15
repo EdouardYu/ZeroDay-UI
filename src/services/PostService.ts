@@ -2,9 +2,9 @@ import axiosInstance from "@/services/axiosConfig";
 
 export interface PostCreationData {
   content?: string;
-  fileId?: number;
-  userId: number;
-  parentId?: number;
+  file_id?: number;
+  user_id: number;
+  parent_id?: number;
 }
 
 export interface PostModificationData {

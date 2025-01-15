@@ -270,6 +270,8 @@ const Profile: FunctionComponent = () => {
   };
 
   const handleSaveClick = async () => {
+    setErrors({});
+    setUploadError(null);
     setGlobalError(null);
     if (!validateProfile()) return;
 
@@ -302,6 +304,7 @@ const Profile: FunctionComponent = () => {
   const handleCancelClick = () => {
     setGlobalError(null);
     setErrors({});
+    setUploadError(null);
     setEditableProfile({ ...profile, picture_id: null });
     setIsEditing(false);
   };
