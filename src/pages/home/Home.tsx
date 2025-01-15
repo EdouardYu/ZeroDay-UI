@@ -48,6 +48,7 @@ const Home: FunctionComponent = () => {
   const pageSize = 20;
 
   const navigate = useNavigate();
+  const blobUrls: string[] = [];
 
   const fetchLinkPreview = async (
     html: string
@@ -68,6 +69,7 @@ const Home: FunctionComponent = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
+      cleanupBlobUrls();
       setLoading(true);
       try {
         const response = await PostService.getAllPosts(
@@ -84,6 +86,8 @@ const Home: FunctionComponent = () => {
               ? URL.createObjectURL(userPictureBlob)
               : null;
 
+            if (userPictureUrl) blobUrls.push(userPictureUrl);
+
             const isImage = post.file_url?.includes("images") ?? false;
             const isVideo = post.file_url?.includes("videos") ?? false;
 
@@ -94,6 +98,8 @@ const Home: FunctionComponent = () => {
               ? URL.createObjectURL(postFileBlob)
               : null;
 
+            if (postFileUrl) blobUrls.push(postFileUrl);
+
             const postLinkPreview = await fetchLinkPreview(post.content);
 
             const parentPictureBlob = post.parent?.user.picture_url
@@ -103,12 +109,16 @@ const Home: FunctionComponent = () => {
               ? URL.createObjectURL(parentPictureBlob)
               : null;
 
+            if (parentPictureUrl) blobUrls.push(parentPictureUrl);
+
             const parentFileBlob = post.parent?.file_url
               ? await FileService.getFile(post.parent.file_url)
               : null;
             const parentFileUrl = parentFileBlob
               ? URL.createObjectURL(parentFileBlob)
               : null;
+
+            if (parentFileUrl) blobUrls.push(parentFileUrl);
 
             const parentLinkPreview = post.parent
               ? await fetchLinkPreview(post.parent.content)
@@ -153,16 +163,15 @@ const Home: FunctionComponent = () => {
     fetchPosts();
 
     return () => {
-      posts.forEach((post) => {
-        if (post.user.picture_url) URL.revokeObjectURL(post.user.picture_url);
-        if (post.file_url) URL.revokeObjectURL(post.file_url);
-        if (post.parent?.file_url) URL.revokeObjectURL(post.parent.file_url);
-        if (post.parent?.user.picture_url)
-          URL.revokeObjectURL(post.parent.user.picture_url);
-      });
+      cleanupBlobUrls();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
+
+  const cleanupBlobUrls = () => {
+    blobUrls.forEach((url) => URL.revokeObjectURL(url));
+    blobUrls.length = 0;
+  };
 
   const nextPage = () => {
     if (currentPage < totalPages) {

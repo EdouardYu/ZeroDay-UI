@@ -32,6 +32,10 @@ const LogedHeader: FunctionComponent = () => {
       FileService.getProfilePicture(payload.sub)
         .then((blob) => {
           const imageUrl = URL.createObjectURL(blob);
+          if (profilePicture) {
+            URL.revokeObjectURL(profilePicture);
+          }
+
           setProfilePicture(imageUrl);
         })
         .catch((error) => {
@@ -51,9 +55,12 @@ const LogedHeader: FunctionComponent = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
-      if (profilePicture) URL.revokeObjectURL(profilePicture);
+      if (profilePicture) {
+        URL.revokeObjectURL(profilePicture);
+      }
     };
-  }, [location, profilePicture]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location]);
 
   const handleLogout = async () => {
     await AuthService.signout();

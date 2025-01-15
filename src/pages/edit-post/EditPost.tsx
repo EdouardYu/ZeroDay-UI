@@ -76,7 +76,11 @@ const EditPost: FunctionComponent = () => {
     };
 
     fetchParentPost();
-  }, [location.search, currentUserId]);
+
+    return () => {
+      if (filePreview) URL.revokeObjectURL(filePreview);
+    };
+  }, [location.search, currentUserId, filePreview]);
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
@@ -88,6 +92,8 @@ const EditPost: FunctionComponent = () => {
 
     const file = e.target.files[0];
     const mimeType = file.type;
+
+    if (filePreview) URL.revokeObjectURL(filePreview);
 
     setGlobalError(null);
     setFilePreview(null);

@@ -49,6 +49,8 @@ const Post: FunctionComponent = () => {
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
 
+  const blobUrls: string[] = [];
+
   const fetchLinkPreview = async (
     html: string
   ): Promise<LinkPreviewData | null> => {
@@ -80,12 +82,16 @@ const Post: FunctionComponent = () => {
           ? URL.createObjectURL(userPictureBlob)
           : null;
 
+        if (userPictureUrl) blobUrls.push(userPictureUrl);
+
         const postFileBlob = postData.file_url
           ? await FileService.getFile(postData.file_url)
           : null;
         const postFileUrl = postFileBlob
           ? URL.createObjectURL(postFileBlob)
           : null;
+
+        if (postFileUrl) blobUrls.push(postFileUrl);
 
         const postFileType = postData.file_url?.includes("images")
           ? "image"
@@ -102,12 +108,16 @@ const Post: FunctionComponent = () => {
           ? URL.createObjectURL(parentPictureBlob)
           : null;
 
+        if (parentPictureUrl) blobUrls.push(parentPictureUrl);
+
         const parentFileBlob = postData.parent?.file_url
           ? await FileService.getFile(postData.parent.file_url)
           : null;
         const parentFileUrl = parentFileBlob
           ? URL.createObjectURL(parentFileBlob)
           : null;
+
+        if (parentFileUrl) blobUrls.push(parentFileUrl);
 
         const parentFileType = postData.parent?.file_url?.includes("images")
           ? "image"
@@ -154,6 +164,12 @@ const Post: FunctionComponent = () => {
     };
 
     fetchPost();
+
+    return () => {
+      blobUrls.forEach((url) => URL.revokeObjectURL(url));
+      blobUrls.length = 0;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleReply = () => {

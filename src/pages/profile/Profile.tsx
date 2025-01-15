@@ -129,6 +129,9 @@ const Profile: FunctionComponent = () => {
 
         const blob = await FileService.getFile(profileData.picture_url);
         const imageUrl = URL.createObjectURL(blob);
+
+        if (profileImage) URL.revokeObjectURL(profileImage);
+
         setProfileImage(imageUrl);
       } catch (error) {
         if (
@@ -171,6 +174,10 @@ const Profile: FunctionComponent = () => {
 
     fetchProfile();
     fetchOptions();
+    return () => {
+      if (profileImage) URL.revokeObjectURL(profileImage);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleInputChange = (
@@ -284,6 +291,9 @@ const Profile: FunctionComponent = () => {
 
       const blob = await FileService.getFile(updatedProfile.picture_url);
       const imageUrl = URL.createObjectURL(blob);
+
+      if (profileImage) URL.revokeObjectURL(profileImage);
+
       setProfileImage(imageUrl);
 
       if (fileInputRef.current) fileInputRef.current.value = "";
