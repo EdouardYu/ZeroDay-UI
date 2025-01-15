@@ -135,8 +135,9 @@ const EditPost: FunctionComponent = () => {
         parent_id: editablePost.parent_id,
       };
 
-      await PostService.createPost(postData);
-      navigate("/");
+      const data = await PostService.createPost(postData);
+      if (data) setGlobalError(data.message);
+      else navigate("/");
     } catch (error) {
       if (
         axios.isAxiosError(error) &&

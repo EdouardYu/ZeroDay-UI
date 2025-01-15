@@ -79,6 +79,10 @@ textarea {
   color: red;
   margin-top: 5px;
   font-size: 12px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-width: 100%;
 }
 
 .edit-post-buttons {
