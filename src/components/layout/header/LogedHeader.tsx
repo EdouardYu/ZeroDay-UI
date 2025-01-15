@@ -1,10 +1,8 @@
 import { FunctionComponent, useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "@/components/layout/header/Header.css";
-import HomeIcon from "@/components/icons/Home";
-import PostEditIcon from "@/components/icons/PostEdit";
-import AuthService from "@/services/AuthService";
-import FileService from "@/services/FileService";
+import { EditPostIcon, HomeIcon } from "@/components/icons";
+import { AuthService, FileService } from "@/services";
 
 interface JwtPayload {
   sub: string;
@@ -108,7 +106,7 @@ const LogedHeader: FunctionComponent = () => {
           className={`header-item ${active === "post/edit" ? "active" : ""}`}
           onClick={() => handleNavigation("/post/edit")}
         >
-          <PostEditIcon />
+          <EditPostIcon />
           <div className="tooltip">Create Post</div>
         </div>
       </div>

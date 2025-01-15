@@ -6,8 +6,7 @@ import {
   useRef,
 } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import PostService, { PostCreationData } from "@/services/PostService";
-import FileService from "@/services/FileService";
+import { PostService, FileService } from "@/services";
 import "@/pages/edit-post/EditPost.css";
 import Loader from "@/components/loader/Loader";
 import axios from "axios";
@@ -16,6 +15,13 @@ interface EditablePostProps {
   content: string;
   file_id: number | null;
   user_id: number | null;
+  parent_id?: number;
+}
+
+export interface PostCreationData {
+  content?: string;
+  file_id?: number;
+  user_id: number;
   parent_id?: number;
 }
 

@@ -6,8 +6,7 @@ import {
   useState,
 } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import AuthService from "@/services/AuthService";
-import UserService from "@/services/UserService";
+import { AuthService, UserService } from "@/services";
 import "@/pages/authentication/Auth.css";
 import axios from "axios";
 

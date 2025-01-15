@@ -6,8 +6,7 @@ import {
   useRef,
 } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import UserService from "@/services/UserService";
-import FileService from "@/services/FileService";
+import { UserService, FileService } from "@/services";
 import "@/pages/profile/Profile.css";
 import Loader from "@/components/loader/Loader";
 import axios from "axios";

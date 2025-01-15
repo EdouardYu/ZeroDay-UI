@@ -1,6 +1,6 @@
 import { FunctionComponent, useState, ChangeEvent, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthService from "@/services/AuthService";
+import { AuthService } from "@/services";
 import "@/pages/authentication/Auth.css";
 import axios from "axios";
 

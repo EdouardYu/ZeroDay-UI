@@ -1,8 +1,7 @@
 import { FunctionComponent } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "@/App.css";
-import PrivateRouter from "@/routes/PrivateRouter";
-import PublicRouter from "@/routes/PublicRouter";
+import { PrivateRouter, PublicRouter } from "@/routes";
 import { AuthGuard, PublicGuard } from "@/guards/AuthGuard";
 
 const App: FunctionComponent = () => {

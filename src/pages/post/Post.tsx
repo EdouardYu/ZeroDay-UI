@@ -1,7 +1,6 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import PostService from "@/services/PostService";
-import FileService from "@/services/FileService";
+import { PostService, FileService } from "@/services";
 import Loader from "@/components/loader/Loader";
 import "@/pages/post/Post.css";
 import { toCapitalizedWords } from "@/helpers/StringHelper";
