@@ -1,50 +1,33 @@
-# React + TypeScript + Vite
+# **ZeroDay-UI - Frontend for a Social Network with CTF Challenges**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**ZeroDay-UI** is the frontend service for a social networking platform designed as part of the **Software Security project at ISEP**. This platform allows users to connect and participate in **CTF (Capture the Flag)** challenges, exploring and learning about common security vulnerabilities.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## **Purpose**
 
-## Expanding the ESLint configuration
+This project simulates real-world security issues to:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. Enable hands-on practice with vulnerabilities such as path traversal, SSRF, JWT exploitation, and SpEL injection.
+2. Teach secure software development techniques by addressing these vulnerabilities.
 
-- Configure the top-level `parserOptions` property like this:
+---
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## **Backend Repository**
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+The Backend for this project is available in a separate repository:  
+[Backend Repository](https://github.com/EdouardYu/ZeroDay)
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+---
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## **CTF Challenges Implemented**
+
+### 1. Path Traversal, SSRF, and JWT Forgery
+
+- **Path Traversal**: Exploit path traversal vulnerabilities to access sensitive configuration files.
+- **SSRF**: Exploit the server to access restricted internal resources.
+- **JWT Exploitation**: Manipulate JWT to escalate privileges.
+
+### 2. SpEL Injection Attack
+
+- **SpEL Injection**: Exploit Spring Expression Language (SpEL) injection to execute arbitrary commands or retrieve system environment variables on the server.
