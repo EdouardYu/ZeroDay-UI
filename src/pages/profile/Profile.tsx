@@ -383,8 +383,12 @@ const Profile: FunctionComponent = () => {
   const handleDeleteAccount = async () => {
     try {
       await UserService.deleteAccount(id!);
-      localStorage.removeItem("authToken");
-      navigate("/authentication/login");
+      if (currentUserRole === "ADMINISTRATOR") {
+        navigate("/");
+      } else {
+        localStorage.removeItem("authToken");
+        navigate("/authentication/login");
+      }
     } catch (error) {
       if (
         axios.isAxiosError(error) &&
@@ -428,12 +432,14 @@ const Profile: FunctionComponent = () => {
             >
               Change Password
             </button>
-            <button
-              className="delete-account-button"
-              onClick={() => setShowDeletePopup(true)}
-            >
-              Delete Account
-            </button>
+            {profile.role !== "ADMINISTRATOR" && (
+              <button
+                className="delete-account-button"
+                onClick={() => setShowDeletePopup(true)}
+              >
+                Delete Account
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -625,10 +631,10 @@ const Profile: FunctionComponent = () => {
                 placeholder="Confirm Password"
                 required
               />
+              {passwordErrors.confirm_password && (
+                <span className="error">{passwordErrors.confirm_password}</span>
+              )}
             </label>
-            {passwordErrors.confirm_password && (
-              <div className="error">{passwordErrors.confirm_password}</div>
-            )}
             <div className="popup-buttons">
               <button className="close-button" onClick={closePopup}>
                 Cancel
