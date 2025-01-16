@@ -1,11 +1,13 @@
 import { FunctionComponent, useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "@/components/layout/header/Header.css";
-import { EditPostIcon, HomeIcon } from "@/components/icons";
-import { AuthService, FileService } from "@/services";
+import { EditPostIcon, HomeIcon, FlagIcon } from "@/components/icons";
+import { AuthService, FileService, UserService } from "@/services";
+import axios from "axios";
 
 interface JwtPayload {
   sub: string;
+  role: string;
 }
 
 const LogedHeader: FunctionComponent = () => {
@@ -13,6 +15,10 @@ const LogedHeader: FunctionComponent = () => {
   const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<JwtPayload | null>(null);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [popupContent, setPopupContent] = useState<string | null>(null);
+  const [popupError, setPopupError] = useState<string | null>(null);
+
   const navigate = useNavigate();
   const location = useLocation();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -27,18 +33,12 @@ const LogedHeader: FunctionComponent = () => {
       const payload: JwtPayload = JSON.parse(atob(token.split(".")[1]));
       setUserInfo(payload);
 
-      FileService.getProfilePicture(payload.sub)
-        .then((blob) => {
-          const imageUrl = URL.createObjectURL(blob);
-          if (profilePicture) {
-            URL.revokeObjectURL(profilePicture);
-          }
+      FileService.getProfilePicture(payload.sub).then((blob) => {
+        const imageUrl = URL.createObjectURL(blob);
+        if (profilePicture) URL.revokeObjectURL(profilePicture);
 
-          setProfilePicture(imageUrl);
-        })
-        .catch((error) => {
-          console.error("Error retrieving profile picture", error);
-        });
+        setProfilePicture(imageUrl);
+      });
     }
 
     const handleClickOutside = (event: MouseEvent) => {
@@ -84,6 +84,35 @@ const LogedHeader: FunctionComponent = () => {
     navigate(path);
   };
 
+  const handleFlagClick = async () => {
+    if (!userInfo || userInfo.role !== "ADMINISTRATOR") {
+      return;
+    }
+
+    try {
+      setPopupError(null);
+      setPopupContent(null);
+      setShowPopup(true);
+
+      const flagData = await UserService.getFlag();
+      setPopupContent(flagData.flag);
+    } catch (error) {
+      if (
+        axios.isAxiosError(error) &&
+        error.response &&
+        error.response.status !== 500
+      )
+        setPopupError(error.response.data.message);
+      else setPopupError("Failed to retrieve flag. Please try again later");
+    }
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+    setPopupContent(null);
+    setPopupError(null);
+  };
+
   return (
     <header className="header">
       <div className="header-left">
@@ -109,6 +138,15 @@ const LogedHeader: FunctionComponent = () => {
           <EditPostIcon />
           <div className="tooltip">Create Post</div>
         </div>
+        {userInfo?.role === "ADMINISTRATOR" && (
+          <div
+            className="header-item header-flag-icon"
+            onClick={handleFlagClick}
+          >
+            <FlagIcon />
+            <div className="tooltip">Flag</div>
+          </div>
+        )}
       </div>
       <div className="header-right">
         <div className="header-item profile-container" style={{ padding: 0 }}>
@@ -137,6 +175,19 @@ const LogedHeader: FunctionComponent = () => {
           )}
         </div>
       </div>
+      {showPopup && (
+        <div className="popup-overlay" onClick={closePopup}>
+          <div className="popup-container" onClick={(e) => e.stopPropagation()}>
+            <div className="popup-header">Flag Information</div>
+            <div className="popup-content">
+              {popupContent || popupError || "Loading..."}
+            </div>
+            <button className="popup-close-button" onClick={closePopup}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
