@@ -9,7 +9,7 @@ export interface PostCreationData {
 
 export interface PostModificationData {
   content?: string;
-  fileId?: number;
+  file_id?: number;
 }
 
 const PostService = {
@@ -22,6 +22,11 @@ const PostService = {
 
   getPostById: async (id: string) => {
     const response = await axiosInstance.get(`/posts/${id}`);
+    return response.data;
+  },
+
+  getRawPostById: async (id: string) => {
+    const response = await axiosInstance.get(`/posts/raw/${id}`);
     return response.data;
   },
 

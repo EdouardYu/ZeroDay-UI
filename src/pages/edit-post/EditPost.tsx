@@ -5,7 +5,7 @@ import {
   ChangeEvent,
   useRef,
 } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { PostService, FileService } from "@/services";
 import "@/pages/edit-post/EditPost.css";
 import Loader from "@/components/loader/Loader";
@@ -33,7 +33,6 @@ const initialEditablePost: EditablePostProps = {
 };
 
 const EditPost: FunctionComponent = () => {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const [editablePost, setEditablePost] =
@@ -52,13 +51,45 @@ const EditPost: FunctionComponent = () => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
+    const id = urlParams.get("id");
     const parentId = urlParams.get("parentId");
 
-    const fetchParentPost = async () => {
+    const fetchData = async () => {
       try {
         setIsLoading(true);
 
-        if (parentId) {
+        if (id) {
+          const fetchedPost = await PostService.getRawPostById(id);
+          if (fetchedPost) {
+            setEditablePost(fetchedPost);
+
+            if (fetchedPost.file_url) {
+              try {
+                const fileBlob = await FileService.getFile(
+                  fetchedPost.file_url
+                );
+                const fileUrl = URL.createObjectURL(fileBlob);
+                setFilePreview(fileUrl);
+
+                if (fetchedPost.file_url.includes("images")) {
+                  setFileType("image");
+                } else if (fetchedPost.file_url.includes("videos")) {
+                  setFileType("video");
+                }
+              } catch (fileError) {
+                if (
+                  axios.isAxiosError(fileError) &&
+                  fileError.response &&
+                  fileError.response.status !== 500
+                )
+                  setGlobalError(
+                    `Failed to load file. ${fileError.response.data.message}`
+                  );
+                setGlobalError("Failed to load file. Please try again later");
+              }
+            }
+          }
+        } else if (parentId) {
           setEditablePost((prevState) => ({
             ...prevState,
             parent_id: Number(parentId),
@@ -74,19 +105,25 @@ const EditPost: FunctionComponent = () => {
             user_id: Number(currentUserId),
           }));
         }
-      } catch {
-        setGlobalError("Failed to fetch parent post. Please try again");
+      } catch (error) {
+        if (
+          axios.isAxiosError(error) &&
+          error.response &&
+          error.response.status !== 500
+        )
+          setGlobalError(error.response.data.message);
+        else setGlobalError("Failed to fetch data. Please try again later");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchParentPost();
+    fetchData();
 
     return () => {
       if (filePreview) URL.revokeObjectURL(filePreview);
     };
-  }, [location.search, currentUserId, filePreview]);
+  }, [location.search, currentUserId]);
 
   const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
@@ -138,6 +175,8 @@ const EditPost: FunctionComponent = () => {
 
   const handleSaveClick = async () => {
     setGlobalError(null);
+    const urlParams = new URLSearchParams(location.search);
+    const id = urlParams.get("id");
 
     try {
       const postData: PostCreationData = {
@@ -147,7 +186,10 @@ const EditPost: FunctionComponent = () => {
         parent_id: editablePost.parent_id,
       };
 
-      const data = await PostService.createPost(postData);
+      let data;
+      if (id) data = await PostService.updatePost(id, postData);
+      else data = await PostService.createPost(postData);
+
       if (data) setGlobalError(data.message);
       else navigate("/");
     } catch (error) {
@@ -157,7 +199,7 @@ const EditPost: FunctionComponent = () => {
         error.response.status !== 500
       )
         setGlobalError(error.response.data.message);
-      else setGlobalError("Failed to create post, please try again later");
+      else setGlobalError("Failed to save post, please try again later");
     }
   };
 
@@ -203,7 +245,11 @@ const EditPost: FunctionComponent = () => {
 
   return (
     <div className="edit-post-page">
-      <h1>{id ? "Reply to Post" : "Create a Post"}</h1>
+      <h1>
+        {new URLSearchParams(location.search).get("id")
+          ? "Edit Post"
+          : "Create a Post"}
+      </h1>
       <div className="toolbar">
         <button onClick={() => applyFormatting("b")}>Bold</button>
         <button onClick={() => applyFormatting("i")}>Italic</button>
