@@ -69,6 +69,9 @@ const EditPost: FunctionComponent = () => {
                   fetchedPost.file_url
                 );
                 const fileUrl = URL.createObjectURL(fileBlob);
+
+                if (filePreview) URL.revokeObjectURL(filePreview);
+
                 setFilePreview(fileUrl);
 
                 if (fetchedPost.file_url.includes("images")) {
